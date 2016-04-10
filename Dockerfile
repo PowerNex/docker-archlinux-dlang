@@ -1,6 +1,9 @@
-# A docker image for a ArchLinux installation with the dlang development environment
+# archlinux-dlang
+# VERSION 0.2.0
+#
+# A fully updated Arch Linux with dmd & dub
 
 FROM wild/archlinux
 MAINTAINER Dan Printzell <me@vild.io>
 
-RUN pacman --noconfirm -S dmd dtools dub
+ONBUILD RUN pacman -S --noconfirm dmd dtools dub
