@@ -1,20 +1,44 @@
 pipeline {
   agent any
   stages {
-    stage('checkout') {
-      steps {
-        git 'https://github.com/PowerNex/docker-archlinux-dlang'
-      }
-    }
     stage('build') {
       steps {
-        sh 'docker build -t "wild/archlinux-dlang" .'
+				script {
+					if (env.JOB_NAME.endsWith("_pull-requests"))
+						setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Building Docker image"
+				}
+				ansiColor('xterm') {
+        	sh 'docker build -t "wild/archlinux-dlang" .'
+				}
       }
     }
+
     stage('deploy') {
       steps {
-        sh 'docker push "wild/archlinux-dlang"'
+				script {
+					if (env.JOB_NAME.endsWith("_pull-requests"))
+						setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Publishing Docker image"
+				}
+				ansiColor('xterm') {
+       		sh 'docker push "wild/archlinux-dlang"'
+				}
       }
     }
+  }
+
+  post {
+    success {
+			script {
+				if (env.JOB_NAME.endsWith("_pull-requests"))
+					setGitHubPullRequestStatus state: 'SUCCESS', context: "${env.JOB_NAME}", message: "Docker image building successed"
+			}
+      build job: 'docker-powernex-env', wait: false
+    }
+		failure {
+			script {
+				if (env.JOB_NAME.endsWith("_pull-requests"))
+					setGitHubPullRequestStatus state: 'FAILURE', context: "${env.JOB_NAME}", message: "Docker image building successed"
+			}
+		}
   }
 }
