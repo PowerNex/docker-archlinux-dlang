@@ -32,7 +32,7 @@ pipeline {
 				if (env.JOB_NAME.endsWith("_pull-requests"))
 					setGitHubPullRequestStatus state: 'SUCCESS', context: "${env.JOB_NAME}", message: "Docker image building successed"
 			}
-      build job: 'docker-powernex-env', wait: false
+			build job: 'PowerNex/docker-powernex-env', wait: false
     }
 		failure {
 			script {
