@@ -8,7 +8,7 @@ pipeline {
 						setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Building Docker image"
 				}
 				ansiColor('xterm') {
-        	sh 'docker build -t "wild/archlinux-dlang" .'
+					sh 'docker build -t "wild/archlinux-dlang" --no-cache --pull .'
 				}
       }
     }
@@ -20,7 +20,7 @@ pipeline {
 						setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Publishing Docker image"
 				}
 				ansiColor('xterm') {
-       		sh 'docker push "wild/archlinux-dlang"'
+					sh 'docker push "wild/archlinux-dlang"'
 				}
       }
     }
@@ -32,12 +32,12 @@ pipeline {
 				if (env.JOB_NAME.endsWith("_pull-requests"))
 					setGitHubPullRequestStatus state: 'SUCCESS', context: "${env.JOB_NAME}", message: "Docker image building successed"
 			}
-			build job: 'PowerNex/docker-powernex-env', wait: false
+			build job: '/PowerNex/docker-powernex-env', wait: false
     }
 		failure {
 			script {
 				if (env.JOB_NAME.endsWith("_pull-requests"))
-					setGitHubPullRequestStatus state: 'FAILURE', context: "${env.JOB_NAME}", message: "Docker image building successed"
+					setGitHubPullRequestStatus state: 'FAILURE', context: "${env.JOB_NAME}", message: "Docker image building failed"
 			}
 		}
   }
