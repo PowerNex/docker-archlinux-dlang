@@ -6,4 +6,4 @@
 FROM wild/archlinux
 MAINTAINER Dan Printzell <me@vild.io>
 
-RUN pacman -S --noconfirm dmd dtools dub ldc dmd-docs
+RUN pacman -Sy --noconfirm dmd dtools dub ldc dmd-docs
